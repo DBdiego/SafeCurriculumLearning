@@ -26,17 +26,17 @@ np.random.seed(9)
 
 # Define simulation and curricular outline
 num_curricula = 1
-num_curricular_steps = 5
+num_curricular_steps = 3
 
 
 # Boolean stating the addition of noise or not
-impose_flat_learning = False
+impose_flat_learning = True
 add_measurement_noise = False
 add_safety_filter = False
 
 # Selection of the system
 system = 'MSD'  # also 'Quadrotor'
-system = 'Quadrotor'
+# system = 'Quadrotor'
 
 configuration_class = Configurations.select_configuration_class(system,
                                                                 impose_flat_learning,

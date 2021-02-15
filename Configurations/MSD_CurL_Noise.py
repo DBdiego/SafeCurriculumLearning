@@ -194,27 +194,33 @@ class SafetyFilterConfig(object):
         self.activated = True
 
         if self.activated:
-            # Plot backup policy projections
+            # Setting dt
+            self.dt = dt
+
+            # Setting action bounds (taken from agent configuration)
+            self.action_bounds = np.copy(action_bounds)
+
+            # Plot policy simulations
             self.plot_backup_policy_projection = True
+
+            # Define what SHERPA does when no backup policy is found an no safe projection can be found.
+            self.last_resort_action = 'random'  # also 'pass-through'
+
+            # Define whether the policy search is processed sequentially or in parallel
+            self.policy_search_processing = 'sequential'  # also 'parallel'
 
             # Iteration parameters
             self.num_iterations_input = 10  # Number of tries to find a backup policy
             self.num_iterations_backup = 10  # Number of policies to be checked
             self.backup_size = 20  # Number of time steps are simulated per policy (in policy search)
-            self.backup_projection_size = np.array([20, 20])
+            self.backup_projection_size = np.array([15, 20])
 
-            # Setting dt
-            self.dt = dt
-
+            # Range in which the parameters of a randomly generated policy (in policy generation)
             self.policy_parameter_range = np.array([-25, 25])
-
-            self.last_resort_action = 'random'  # also 'pass-through'
-
-            # Setting action bounds (taken from agent configuration)
-            self.action_bounds = np.copy(action_bounds)
 
             ## Curricular Step 1
             if curr_step_ind == 0:
+                self.RSS_to_ref_mapping = {0:1}
                 self.states_closeness_condition = np.array([0, 1, 2, 3])
                 self.RSS = np.array([0])
                 self.FSS = np.array([[-0.5, 0.5],
@@ -230,6 +236,7 @@ class SafetyFilterConfig(object):
 
             ## Curricular Step 2
             elif curr_step_ind == 1:
+                self.RSS_to_ref_mapping = {1:1}
                 self.states_closeness_condition = np.array([0, 1, 2, 3, 4, 5])
                 self.RSS = np.array([1])
                 self.FSS = np.array([[ 0.0, 0.0],
@@ -251,6 +258,7 @@ class SafetyFilterConfig(object):
 
             ## Curricular Step 3
             elif curr_step_ind == 2:
+                self.RSS_to_ref_mapping = {2:1}
                 self.states_closeness_condition = np.array([0, 1, 2, 3, 4, 5, 6, 7])
                 self.RSS = np.array([2])
                 self.FSS = np.array([[ 0.0, 0.0],

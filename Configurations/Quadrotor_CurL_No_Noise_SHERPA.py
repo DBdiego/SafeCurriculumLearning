@@ -368,6 +368,7 @@ class SafetyFilterConfig(object):
             if curr_step_ind == 0:  # --> safety filter is not active
 
                 self.states_closeness_condition = None
+                self.RSS_to_ref_mapping = None
                 self.RSS = None
                 self.FSS = None
                 self.sensor_reach = None

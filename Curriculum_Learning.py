@@ -291,12 +291,12 @@ class Curriculum(object):
             raise ValueError("Configuration: C matrix and Reference map don't have same number of rows")
 
 
-        # Safety filter checks
-        if configuration.safety_filter_config.activated:
-            safety_filter_config = configuration.safety_filter_config
-
-            if safety_filter_config.RSS.shape[0] != len(safety_filter_config.RSS_to_ref_mapping.keys()):
-                raise ValueError('Configuration: Mismatch between size of RSS and RSS_to_ref_mapping attributes.')
+        # # Safety filter checks
+        # if configuration.safety_filter_config.activated:
+        #     safety_filter_config = configuration.safety_filter_config
+        #
+        #     if safety_filter_config.RSS.shape[0] != len(safety_filter_config.RSS_to_ref_mapping.keys()):
+        #         raise ValueError('Configuration: Mismatch between size of RSS and RSS_to_ref_mapping attributes.')
 
         return
 

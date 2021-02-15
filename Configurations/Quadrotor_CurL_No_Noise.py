@@ -354,7 +354,7 @@ class SafetyFilterConfig(object):
             self.last_resort_action = 'pass-through'  # also 'random'
 
             # Define whether the policy search is processed sequentially or in parallel
-            self.policy_search_processing = 'parallel'  # also "sequentlial"
+            self.policy_search_processing = 'parallel'  # also "sequential"
 
             # Iteration parameters
             self.num_iterations_input = 10  # Number of tries to find a backup policy

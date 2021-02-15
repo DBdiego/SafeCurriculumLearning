@@ -154,7 +154,7 @@ class N_MSD(object):
                               filename=static_plot_directory)
 
         # Plot an animation of the evolution of the mass positions
-        if configuration.plot_animation:
+        if 1 or configuration.plot_animation:
             # Define directory of animated plot
             ani_plot_filename = 'Pos_evo_' + curricular_step.name + curricular_step.stable_policy_found * '_converged'
             ani_plot_directory = curricular_step.folder_name + '/' + ani_plot_filename
@@ -164,7 +164,8 @@ class N_MSD(object):
                                        curricular_step.state_storage,
                                        curricular_step.action_storage,
                                        int(curricular_step.env.n/2),
-                                       RSSS_width,
+                                       FSS=None,
+                                       main_title='',
                                        filename=ani_plot_directory)
 
         # Save system characteristics and initial conditions
@@ -216,9 +217,10 @@ class N_MSD(object):
         :param all_states:
         :param all_actions:
         :param n_masses:
-        :param RSSS_w:
         :param n_samples:
         :param action_bounds:
+        :param FSS_bounds:
+        :param position_plot_bounds:
         :param filename:
         :return:
         '''
@@ -335,7 +337,7 @@ class N_MSD(object):
         return
 
 
-    def N_MSD_animation(self, times, all_states, all_actions, n_masses, RSSS_w, main_title='', filename=''):
+    def N_MSD_animation(self, times, all_states, all_actions, n_masses, FSS=None, main_title='', filename=''):
         '''
 
         :param all_states:
@@ -347,13 +349,13 @@ class N_MSD(object):
         :return:
         '''
 
-        spring_attach_rod_l = 0.2
+        spring_attach_rod_l = 0.03
         num_spring_coils = 20
-        spring_h = 0.05
-        damper_h = 0.1
-        damper_w = 1
-        dist_between_m = 5
-        rect_dims = [1, 1]
+        spring_h = 0.01
+        damper_h = 0.01
+        damper_w = 0.04
+        dist_between_m = 0.25
+        mass_w, mass_h = [0.05, 0.06]
 
         # Window creation
         fig = plt.figure(figsize=(12, 8))
@@ -365,16 +367,18 @@ class N_MSD(object):
 
         ax2.set_xlim([times[0],times[-1]])
 
-        ax3.set_xlim([0,(n_masses+1)*5])
-        ax3.set_ylim([-0.1, 1.5])
+        ax3.set_xlim([0,(n_masses+1)*0.25])
+        ax3.set_ylim([0.0, 0.1])
 
-        # Plot safe region (RSSS)
-        mass_w, mass_h = rect_dims
-        RSS_width = RSSS_w + mass_w
-        RSS_height = ax3.get_ylim()[1]
-        start_x_RSSS = n_masses * dist_between_m - RSS_width/2
-
-        ax3.add_patch(Rectangle((start_x_RSSS, 0), RSS_width, RSS_height, color='green', alpha=0.3))
+        if FSS is not None:
+            # Plot safe state space (SSS) region based on FSS
+            raise ValueError('SSS Plotting not implemented')
+            #
+            # RSS_width = RSSS_w + mass_w
+            # RSS_height = ax3.get_ylim()[1]
+            # start_x_RSSS = n_masses * dist_between_m - RSS_width/2
+            #
+            # ax3.add_patch(Rectangle((start_x_RSSS, 0), RSS_width, RSS_height, color='green', alpha=0.3))
 
         lines = []
         ax1_lines = []
@@ -519,7 +523,8 @@ class N_MSD(object):
 
             return
 
-        fig.suptitle(main_title)
+        if main_title != '':
+            fig.suptitle(main_title)
 
         # Plot 1 (Mass Positions)
         ax1.plot([times[0], times[-1]], [0, 0], lw=1, c='k')
@@ -537,15 +542,16 @@ class N_MSD(object):
 
         # Plot 3 (MSD System visualisation)
         ax3.plot([0, ax3.get_xlim()[1]], [0,0], lw=2, c='k')
+        ax3.plot([0, 0], [0, ax3.get_ylim()[1]], lw=4, c='k')
         ax3.set_title('animation of masses')
         ax3.set_xlabel('x-position [m]')
-        ax3.set_ylabel('y-position [m]')
+        ax3.get_yaxis().set_visible(False)
         ax3.minorticks_on()
         ax3.grid(b=True, color='#dddddd', which='major')
         ax3.grid(b=True, color='#dddddd', which='minor', linestyle='--', linewidth=0.2)
         ax3.set_axisbelow(True)
 
-        plt.subplots_adjust(left=0.055, bottom=0.05, right=0.95, top=0.92, wspace=0.1, hspace=0.5)
+        plt.subplots_adjust(left=0.055, bottom=0.06, right=0.95, top=0.92, wspace=0.1, hspace=0.5)
 
         ani = animation.FuncAnimation(fig, animate_MSD, frames=times.shape[0], interval=1, repeat=False)
 

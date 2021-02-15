@@ -43,16 +43,24 @@ def select_configuration_class(system, impose_FL, add_measurement_noise, add_saf
 
     ## Mass-Spring-Damper System
     if system.lower() == avail_systems[0]:
-        # Flat learning without safety filter (with measurement noise)
-        if impose_FL and not add_safety_filter and add_measurement_noise:
+        # Flat learning without safety filter (without measurement noise)
+        if impose_FL and not add_safety_filter and not add_measurement_noise:
             configuration_class = msd_fl_noise_config
 
-        # Flat learning with/without safety filter (with measurement noise)
-        elif impose_FL and not add_measurement_noise:
+        # Flat learning without safety filter (with measurement noise)
+        elif impose_FL and not add_safety_filter and add_measurement_noise:
+            configuration_class = msd_fl_noise_config
+
+        # Flat learning with safety filter (with/without measurement noise)
+        elif impose_FL and add_safety_filter:
             raise ValueError('No configuration for {} simulation'.format(sim_str))
 
         # Curriculum Learning without safety filter (without measurement noise)
         elif not impose_FL and not add_safety_filter and not add_measurement_noise:
+            configuration_class = msd_curl_no_noise_config
+
+        # Curriculum Learning without safety filter (without measurement noise)
+        elif not impose_FL and add_safety_filter and not add_measurement_noise:
             configuration_class = msd_curl_no_noise_config
 
         # Curriculum Learning without safety filter (with measurement noise)
@@ -65,7 +73,7 @@ def select_configuration_class(system, impose_FL, add_measurement_noise, add_saf
 
         # Curriculum Learning with safety filter (with measurement noise)
         elif not impose_FL and add_safety_filter and add_measurement_noise:
-            pass
+            configuration_class = msd_curl_noise_config
 
         else:
             raise ValueError('Logical error in the implementation')
